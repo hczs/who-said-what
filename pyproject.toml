@@ -7,7 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.12",
     "loguru>=0.7.3",
+    "numpy>=2.2.5",
     "pydantic>=2.11.4",
     "pydantic-settings>=2.9.1",
+    "sherpa-onnx>=1.11.6",
     "uvicorn>=0.34.2",
 ]
