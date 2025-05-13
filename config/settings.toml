@@ -1,0 +1,28 @@
+# 所有的路径都是默认从根目录开始
+# 音频配置
+[project]
+log_level = "INFO"
+
+[voice]
+global_sample_rate = 16000
+
+
+# 模型配置
+# asr
+[models.asr.fireredasr]
+encoder_path = 'models/asr/fireredasr/encoder.int8.onnx'
+decoder_path = 'models/asr/fireredasr/decoder.int8.onnx'
+tokens_path = 'models/asr/fireredasr/decoder.int8.onnx'
+
+[models.asr.telespeechctc]
+model_path = 'models/asr/telespeechctc/sherpa-onnx-telespeech-ctc-int8-zh-2024-06-04.onnx'
+tokens_path = 'models/asr/telespeechctc/decoder.int8.onnx'
+
+# embedding
+[models.embedding]
+campplus_path = 'models/embedding/3dspeaker_speech_campplus_sv_zh-cn_16k-common.onnx'
+eres2net_path = 'models/embedding/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx'
+
+# segmentation
+[models.segmentation]
+pyannote_segmentation_3_0_path = 'models/segmentation/sherpa-onnx-pyannote-segmentation-3-0.onnx'
