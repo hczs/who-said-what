@@ -13,9 +13,14 @@
 __author__ = 'powercheng'
 
 import tomllib
+from functools import cached_property
 from pathlib import Path
+from typing import Any, Union
 
+from loguru import logger
 from pydantic import BaseModel, model_validator
+
+from app.enums.model_enum import AsrEnum
 
 PROJECT_ROOT: Path = Path(__file__).resolve().parents[2]
 
@@ -44,7 +49,7 @@ class ASRFireredasrConfig(BaseModel):
         return self
 
 
-class ASRTelespeechCTCConfig(BaseModel):
+class ASRSenseVoiceConfig(BaseModel):
     model_path: str
     tokens_path: str
 
@@ -57,33 +62,37 @@ class ASRTelespeechCTCConfig(BaseModel):
 
 class ASRConfig(BaseModel):
     fireredasr: ASRFireredasrConfig
-    telespeechctc: ASRTelespeechCTCConfig
-
-
-class EmbeddingConfig(BaseModel):
-    campplus_path: str
-    eres2net_path: str
-
-    @model_validator(mode="after")
-    def resolve_paths(self):
-        self.campplus_path = convert_absolute_path(self.campplus_path)
-        self.eres2net_path = convert_absolute_path(self.eres2net_path)
-        return self
-
-
-class SegmentationConfig(BaseModel):
-    pyannote_segmentation_3_0_path: str
-
-    @model_validator(mode="after")
-    def resolve_paths(self):
-        self.pyannote_segmentation_3_0_path = convert_absolute_path(self.pyannote_segmentation_3_0_path)
-        return self
+    sensevoice: ASRSenseVoiceConfig
 
 
 class ModelsConfig(BaseModel):
-    asr: ASRConfig
-    embedding: EmbeddingConfig
-    segmentation: SegmentationConfig
+    asr: str
+    embedding_path: str
+    segmentation_path: str
+    asr_config: dict[str, Any]
+
+    @model_validator(mode="after")
+    def resolve_paths(self):
+        self.embedding_path = convert_absolute_path(self.embedding_path)
+        self.segmentation_path = convert_absolute_path(self.segmentation_path)
+        return self
+
+    @cached_property
+    def fireredasr(self) -> ASRFireredasrConfig:
+        asr_type = AsrEnum.from_string(settings.models.asr)
+        if asr_type == AsrEnum.FIRE_RED_ASR:
+            return ASRFireredasrConfig.model_validate(self.asr_config.get("fireredasr"))
+        else:
+            logger.error(f"Please config the [asr.fireredasr] in {SETTINGS_CONFIG_PATH}")
+            raise ValueError(f"Please config the [asr.fireredasr] in {SETTINGS_CONFIG_PATH}")
+
+    @cached_property
+    def sensevoice(self) -> ASRSenseVoiceConfig:
+        asr_type = AsrEnum.from_string(settings.models.asr)
+        if asr_type == AsrEnum.SENSE_VOICE:
+            return ASRSenseVoiceConfig.model_validate(self.asr_config.get("sensevoice"))
+        else:
+            raise ValueError(f"Please config the [asr.sensevoice] in {SETTINGS_CONFIG_PATH}")
 
 
 class ProjectConfig(BaseModel):
@@ -97,18 +106,20 @@ class Settings(BaseModel):
 
 
 def load_settings(toml_path: str = SETTINGS_CONFIG_PATH) -> Settings:
+    """
+    加载项目toml配置文件，返回封装好的settings对象和原始的配置文件字典
+
+    :param toml_path: 项目配置文件路径
+    :return: settings 对象，原始配置文件字典
+    """
     with open(toml_path, "rb") as f:
         data = tomllib.load(f)
-
+    # 注入 asr 配置
+    data["models"]["asr_config"] = data.get("asr", {})
     return Settings.model_validate(data)
 
 
 settings = load_settings()
 
-
-def main():
+if __name__ == '__main__':
     print(settings)
-
-
-if __name__ == "__main__":
-    main()

@@ -9,20 +9,24 @@ global_sample_rate = 16000
 
 # 模型配置
 # asr
-[models.asr.fireredasr]
+[models]
+# fireredasr or sensevoice
+# fireredasr: wget https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-fire-red-asr-large-zh_en-2025-02-16.tar.bz2
+# sensevoice: wget https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17.tar.bz2
+asr = 'sensevoice'
+# embedding model path
+# Please visit https://github.com/k2-fsa/sherpa-onnx/releases/tag/speaker-recongition-models
+# for a list of available models. The following is an example
+# wget https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx
+embedding_path = 'models/embedding/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx'
+# segmentation
+segmentation_path = 'models/segmentation/sherpa-onnx-pyannote-segmentation-3-0.onnx'
+
+[asr.fireredasr]
 encoder_path = 'models/asr/fireredasr/encoder.int8.onnx'
 decoder_path = 'models/asr/fireredasr/decoder.int8.onnx'
 tokens_path = 'models/asr/fireredasr/decoder.int8.onnx'
 
-[models.asr.telespeechctc]
-model_path = 'models/asr/telespeechctc/sherpa-onnx-telespeech-ctc-int8-zh-2024-06-04.onnx'
-tokens_path = 'models/asr/telespeechctc/decoder.int8.onnx'
-
-# embedding
-[models.embedding]
-campplus_path = 'models/embedding/3dspeaker_speech_campplus_sv_zh-cn_16k-common.onnx'
-eres2net_path = 'models/embedding/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx'
-
-# segmentation
-[models.segmentation]
-pyannote_segmentation_3_0_path = 'models/segmentation/sherpa-onnx-pyannote-segmentation-3-0.onnx'
+[asr.sensevoice]
+model_path = 'a'
+tokens_path = 'b'
