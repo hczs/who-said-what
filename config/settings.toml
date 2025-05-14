@@ -28,5 +28,5 @@ decoder_path = 'models/asr/fireredasr/decoder.int8.onnx'
 tokens_path = 'models/asr/fireredasr/decoder.int8.onnx'
 
 [asr.sensevoice]
-model_path = 'a'
-tokens_path = 'b'
+model_path = 'models/asr/sensevoice/model.onnx'
+tokens_path = 'models/asr/sensevoice/tokens.txt'
