@@ -53,7 +53,7 @@ class DiarizationService:
         if sample_rate != settings.voice.global_sample_rate:
             raise ValueError(f"Sample rate must be {settings.voice.global_sample_rate}")
 
-        result = await asyncio.to_thread(lambda: self.diarization_model.process(audio_data))
+        result = await asyncio.to_thread(self.diarization_model.process, audio_data)
         result = result.sort_by_start_time()
         diarization_results = [
             DiarizationResult.model_validate({
