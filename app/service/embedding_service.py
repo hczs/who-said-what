@@ -21,11 +21,10 @@ from app.core.config import settings
 
 class EmbeddingService:
     def __init__(self):
+        self.embedding_config = sherpa_onnx.SpeakerEmbeddingExtractorConfig(model=settings.models.embedding_path)
         self.embedding_model = None
-        self.embedding_config = None
 
     def load_model(self) -> None:
-        self.embedding_config = sherpa_onnx.SpeakerEmbeddingExtractorConfig(model=settings.models.embedding_path)
         self.embedding_model = sherpa_onnx.SpeakerEmbeddingExtractor(self.embedding_config)
         logger.info("Embedding model loaded")
 
