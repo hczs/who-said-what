@@ -46,8 +46,7 @@ class DiarizationService:
                                                                          min_duration_off=0.5)
         if not diarization_config.validate():
             raise RuntimeError(
-                "Diarization model load config error! Please check your config and make sure all required files exist"
-            )
+                "Diarization model load config error! Please check your config and make sure all required files exist")
         self.diarization_model = sherpa_onnx.OfflineSpeakerDiarization(diarization_config)
 
     async def process(self, audio_data: np.ndarray, sample_rate: int) -> list[DiarizationResult]:
