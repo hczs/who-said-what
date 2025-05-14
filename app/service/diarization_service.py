@@ -35,6 +35,9 @@ class DiarizationService:
         self.diarization_model = None
 
     def load_model(self, num_speakers: int = -1, cluster_threshold: float = 0.5) -> None:
+        if self.diarization_model is not None:
+            print("Diarization model already loaded.")
+            return
         segmentation_config = sherpa_onnx.OfflineSpeakerSegmentationModelConfig(
             pyannote=sherpa_onnx.OfflineSpeakerSegmentationPyannoteModelConfig(model=settings.models.segmentation_path)
         )
