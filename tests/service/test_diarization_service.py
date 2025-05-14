@@ -16,9 +16,12 @@ import pytest
 from app.utils import audio_util
 from app.service.diarization_service import diarization_service
 
+@pytest.fixture(scope="module", autouse=True)
+def load_model():
+    diarization_service.load_model()
+
 @pytest.mark.asyncio
 async def test_process():
     samples, sample_rate = audio_util.load_audio("../data/three_person_conversation.wav")
-    diarization_service.load_model()
     result = await diarization_service.process(samples, sample_rate)
     assert result is not None and len(result) == 3
