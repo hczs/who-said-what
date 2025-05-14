@@ -14,6 +14,7 @@ __author__ = 'powercheng'
 
 import numpy as np
 import sherpa_onnx
+from loguru import logger
 
 from app.core.config import settings
 from app.enums.model_enum import AsrEnum
@@ -40,7 +41,7 @@ class AsrService:
             )
         else:
             raise ValueError(f"asr_type must be in {AsrEnum.values()}, current is {self.asr_type.value}")
-
+        logger.info(f"load asr model success, asr_type: {self.asr_type.value}")
 
     def asr_wav(self, wav_data: np.ndarray) -> tuple[str, str]:
         """

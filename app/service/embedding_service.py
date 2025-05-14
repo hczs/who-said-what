@@ -14,6 +14,7 @@ __author__ = 'powercheng'
 
 import numpy as np
 import sherpa_onnx
+from loguru import logger
 
 from app.core.config import settings
 
@@ -21,12 +22,12 @@ from app.core.config import settings
 class EmbeddingService:
     def __init__(self):
         self.embedding_model = None
+        self.embedding_config = None
 
     def load_model(self) -> None:
-        embedding_config = sherpa_onnx.SpeakerEmbeddingExtractorConfig(
-            model=settings.models.embedding.eres2net_path
-        )
-        self.embedding_model = sherpa_onnx.SpeakerEmbeddingExtractor(embedding_config)
+        self.embedding_config = sherpa_onnx.SpeakerEmbeddingExtractorConfig(model=settings.models.embedding_path)
+        self.embedding_model = sherpa_onnx.SpeakerEmbeddingExtractor(self.embedding_config)
+        logger.info("Embedding model loaded")
 
     def compute(self, audio_segment: np.ndarray) -> list[float]:
         stream = self.embedding_model.create_stream()
@@ -35,3 +36,5 @@ class EmbeddingService:
         assert self.embedding_model.is_ready(stream)
         return self.embedding_model.compute(stream)
 
+
+embedding_service = EmbeddingService()
