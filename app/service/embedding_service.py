@@ -12,6 +12,8 @@
 """
 __author__ = 'powercheng'
 
+import asyncio
+
 import numpy as np
 import sherpa_onnx
 from loguru import logger
@@ -25,15 +27,21 @@ class EmbeddingService:
         self.embedding_model = None
 
     def load_model(self) -> None:
+        if self.embedding_model is not None:
+            logger.warning("embedding model has been loaded")
+            return
         self.embedding_model = sherpa_onnx.SpeakerEmbeddingExtractor(self.embedding_config)
         logger.info("Embedding model loaded")
 
-    def compute(self, audio_segment: np.ndarray) -> list[float]:
+    def compute_sync(self, audio_segment: np.ndarray) -> list[float]:
         stream = self.embedding_model.create_stream()
         stream.accept_waveform(sample_rate=settings.voice.global_sample_rate, waveform=audio_segment)
         stream.input_finished()
         assert self.embedding_model.is_ready(stream)
         return self.embedding_model.compute(stream)
+
+    async def compute(self, audio_segment: np.ndarray) -> list[float]:
+        return await asyncio.to_thread(self.compute_sync, audio_segment)
 
 
 embedding_service = EmbeddingService()
