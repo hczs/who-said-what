@@ -16,6 +16,7 @@ import asyncio
 
 import numpy as np
 import sherpa_onnx
+from loguru import logger
 from pydantic import BaseModel
 
 from app.core.config import settings
@@ -51,6 +52,7 @@ class DiarizationService:
             raise RuntimeError(
                 "Diarization model load config error! Please check your config and make sure all required files exist")
         self.diarization_model = sherpa_onnx.OfflineSpeakerDiarization(diarization_config)
+        logger.info("load diarization model success!")
 
     async def process(self, audio_data: np.ndarray, sample_rate: int) -> list[DiarizationResult]:
         if sample_rate != settings.voice.global_sample_rate:
