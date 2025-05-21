@@ -17,7 +17,6 @@ import pkgutil
 
 from fastapi import FastAPI
 
-from app.api import example
 from app.core.lifespan import lifespan
 from app.core.middleware import log_request_middleware
 
