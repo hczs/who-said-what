@@ -31,7 +31,7 @@ class EmbeddingService:
             logger.warning("embedding model has been loaded")
             return
         self.embedding_model = sherpa_onnx.SpeakerEmbeddingExtractor(self.embedding_config)
-        logger.info("Embedding model loaded")
+        logger.info("load embedding model success!")
 
     def compute_sync(self, audio_segment: np.ndarray) -> list[float]:
         stream = self.embedding_model.create_stream()
