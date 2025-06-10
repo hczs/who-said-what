@@ -13,7 +13,8 @@ dependencies = [
     "pydantic-settings>=2.9.1",
     "pytest>=8.3.5",
     "pytest-asyncio>=0.26.0",
-    "sherpa-onnx>=1.11.6",
+    "sherpa-onnx==1.11.1+cuda",
     "soundfile>=0.13.1",
     "uvicorn>=0.34.2",
 ]
+
